@@ -2,6 +2,7 @@ package by.sema.socialnetwork.controllers;
 
 
 import by.sema.socialnetwork.DTO.CreateUserDTO;
+import by.sema.socialnetwork.DTO.ShortUserInfoDTO;
 import by.sema.socialnetwork.entities.User;
 import by.sema.socialnetwork.servises.UserService;
 import jakarta.annotation.Resource;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Iterable<User> getAllUsers() {
+    public Iterable<ShortUserInfoDTO> getAllUsers() {
         return userService.getUsers();
     }
 

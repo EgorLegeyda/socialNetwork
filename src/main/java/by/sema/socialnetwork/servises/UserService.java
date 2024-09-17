@@ -2,6 +2,7 @@ package by.sema.socialnetwork.servises;
 
 
 import by.sema.socialnetwork.DTO.CreateUserDTO;
+import by.sema.socialnetwork.DTO.ShortUserInfoDTO;
 import by.sema.socialnetwork.entities.User;
 import by.sema.socialnetwork.DTO.UpdateUserDTO;
 import by.sema.socialnetwork.repositorises.UserRepository;
@@ -9,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -23,8 +25,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
+    public Iterable<ShortUserInfoDTO> getUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> {
+                    ShortUserInfoDTO userDTO = new ShortUserInfoDTO();
+                    userDTO.setFirstname(user.getFirstName());
+                    userDTO.setLastname(user.getLastName());
+                    userDTO.setUsername(user.getUsername());
+                    return userDTO;
+                }).toList();
+
     }
 
     public User getUserById(int id) {
@@ -33,6 +45,7 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
+
 
     public void createUser(CreateUserDTO createUserDTO) {
         User user = new User();
@@ -51,6 +64,7 @@ public class UserService {
         convertDTOToUser(updateUserDTO, userToUpdate);
 
     }
+
     public void deleteUser(int id) {
         userRepository.delete(getUserById(id));
     }
