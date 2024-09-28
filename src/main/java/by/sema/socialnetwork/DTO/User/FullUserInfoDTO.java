@@ -1,12 +1,11 @@
-package by.sema.socialnetwork.DTO;
+package by.sema.socialnetwork.DTO.User;
 
 
 import lombok.Data;
 
 @Data
-public class CreateUserDTO {
+public class FullUserInfoDTO {
     private String username;
-    private String password;
     private String email;
     private String firstName;
     private String lastName;

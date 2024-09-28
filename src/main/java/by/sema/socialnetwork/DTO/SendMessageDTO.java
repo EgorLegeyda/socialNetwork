@@ -1,7 +1,6 @@
 package by.sema.socialnetwork.DTO;
 
 
-import by.sema.socialnetwork.entities.User;
 import lombok.Data;
 
 @Data

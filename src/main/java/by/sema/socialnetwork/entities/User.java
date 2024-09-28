@@ -1,49 +1,61 @@
 package by.sema.socialnetwork.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-@Entity
-@Table(name = "users")
 @Getter
 @Setter
+@Entity
+@Table(name = "users")
 public class User {
-
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @ColumnDefault("nextval('users_id_seq'")
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "username")
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "username", nullable = false, length = 50)
     private String username;
 
-    @Column(name = "password")
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @Column(name = "email")
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "first_name")
+    @Size(max = 50)
+    @Column(name = "first_name", length = 50)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Size(max = 50)
+    @Column(name = "last_name", length = 50)
     private String lastName;
 
-
-    @OneToMany(mappedBy = "sender")
-    @JsonManagedReference
-    private List<Message> messages;
+    @Column(name = "description")
+    private String description;
 
 
-    public User(Long senderId) {
-    }
+    @OneToMany(mappedBy = "friend")
+    private Set<Friendship> friendships = new LinkedHashSet<>();
 
-    public User() {
+    @OneToMany(mappedBy = "receiver")
+    private Set<Message> messages = new LinkedHashSet<>();
 
-    }
+
+
 }

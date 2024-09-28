@@ -1,12 +1,15 @@
 package by.sema.socialnetwork.servises;
 
 
-import by.sema.socialnetwork.DTO.CreateUserDTO;
-import by.sema.socialnetwork.DTO.ShortUserInfoDTO;
+import by.sema.socialnetwork.DTO.User.CreateUserDTO;
+import by.sema.socialnetwork.DTO.User.ShortUserInfoDTO;
+import by.sema.socialnetwork.DTO.User.UpdateUserDTO;
+import by.sema.socialnetwork.DTO.User.FullUserInfoDTO;
 import by.sema.socialnetwork.entities.User;
-import by.sema.socialnetwork.DTO.UpdateUserDTO;
 import by.sema.socialnetwork.repositorises.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,65 +18,73 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
-    public Iterable<ShortUserInfoDTO> getUsers() {
+    public List<ShortUserInfoDTO> getUsers() {
         List<User> users = userRepository.findAll();
 
         return users.stream()
-                .map(user -> {
-                    ShortUserInfoDTO userDTO = new ShortUserInfoDTO();
-                    userDTO.setFirstname(user.getFirstName());
-                    userDTO.setLastname(user.getLastName());
-                    userDTO.setUsername(user.getUsername());
-                    return userDTO;
-                }).toList();
+                .map(user -> modelMapper.map(user, ShortUserInfoDTO.class))
+                .toList();
 
     }
 
-    public User getUserById(int id) {
-        //return usersRepository.getReferenceById(id);
-
-        return userRepository.findById(id)
+    public ShortUserInfoDTO getUserById(int id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        ShortUserInfoDTO userDTO = new ShortUserInfoDTO();
+
+        modelMapper.map(user, userDTO);
+
+        return userDTO;
+    }
+
+
+    public FullUserInfoDTO getFullUserInfoById(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        FullUserInfoDTO fullUserInfoDTO = new FullUserInfoDTO();
+
+        modelMapper.map(user, fullUserInfoDTO);
+
+        return fullUserInfoDTO;
     }
 
 
     public void createUser(CreateUserDTO createUserDTO) {
         User user = new User();
 
-        user.setUsername(createUserDTO.getUsername());
-        user.setPassword(createUserDTO.getPassword());
-        user.setEmail(createUserDTO.getEmail());
-        user.setFirstName(createUserDTO.getFirstName());
-        user.setLastName(createUserDTO.getLastName());
+        modelMapper.map(createUserDTO, user);
 
         userRepository.save(user);
     }
 
-    public void updateUser(int id, UpdateUserDTO updateUserDTO) {
-        User userToUpdate = getUserById(id);
-        convertDTOToUser(updateUserDTO, userToUpdate);
 
+    public void updateUser(int id, UpdateUserDTO updateUserDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        modelMapper.map(updateUserDTO, user);
+        userRepository.save(user);
     }
 
     public void deleteUser(int id) {
-        userRepository.delete(getUserById(id));
+        userRepository.deleteById(id);
     }
 
-    private User convertDTOToUser(UpdateUserDTO updateUserDTO, User user) {
-        user.setFirstName(updateUserDTO.getFirstName());
-        user.setLastName(updateUserDTO.getLastName());
-        user.setEmail(updateUserDTO.getEmail());
-        user.setPassword(updateUserDTO.getPassword());
-        return user;
-    }
+
+
+
 }
+
