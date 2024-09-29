@@ -29,6 +29,10 @@ public class Photo {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Photo(String filePath, String filename) {
         this.url = filePath;
         this.name = filename;

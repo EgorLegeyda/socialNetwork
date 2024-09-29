@@ -57,5 +57,8 @@ public class User {
     private Set<Message> messages = new LinkedHashSet<>();
 
 
+    @OneToOne(mappedBy = "user")
+    private Photo photo;
+
 
 }
