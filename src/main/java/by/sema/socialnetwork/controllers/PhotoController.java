@@ -26,19 +26,19 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
-    @PostMapping
-    public ResponseEntity<Photo> uploadPhoto(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/{userId}")
+    public ResponseEntity<Photo> uploadPhoto(@RequestParam("file") MultipartFile file, @PathVariable Integer userId) {
         try {
-            Photo photo = photoService.savePhoto(file);
+            Photo photo = photoService.savePhoto(file, userId);
             return new ResponseEntity<>(photo, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<String> getPhoto(@PathVariable Integer id) {
-        Optional<Photo> photo = photoService.getPhoto(id);
+    @GetMapping("/{userId}")
+    public ResponseEntity<String> getPhotoByUserId(@PathVariable Integer userId) {
+        Optional<Photo> photo = photoService.getPhoto(userId);
         if (photo.isPresent()) {
             try {
                 Path path = Paths.get(photo.get().getUrl());

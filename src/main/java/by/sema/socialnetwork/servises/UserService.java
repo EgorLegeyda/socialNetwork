@@ -84,7 +84,8 @@ public class UserService {
     }
 
 
-
-
+    public User findById(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+    }
 }
 

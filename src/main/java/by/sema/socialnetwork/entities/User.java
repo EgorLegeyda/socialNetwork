@@ -1,5 +1,8 @@
 package by.sema.socialnetwork.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -49,13 +52,13 @@ public class User {
     @Column(name = "description")
     private String description;
 
-
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "friend", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Friendship> friendships = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "receiver")
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<Message> messages = new LinkedHashSet<>();
-
 
     @OneToOne(mappedBy = "user")
     private Photo photo;

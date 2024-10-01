@@ -17,7 +17,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
             "JOIN m.receiver u " +
             "WHERE ((m.sender.id = :firstUserId AND m.receiver.id = :secondUserId) " +
             "OR  (m.sender.id = :secondUserId AND m.receiver.id = :firstUserId)) ")
-    List<Message> findAllMessagesBetweenTwoUsers(@Param("firstUserId") String firstUserId, @Param("secondUserId") String secondUserId);
+    List<Message> findAllMessagesBetweenTwoUsers(@Param("firstUserId") Integer firstUserId, @Param("secondUserId") Integer secondUserId);
 
 
 

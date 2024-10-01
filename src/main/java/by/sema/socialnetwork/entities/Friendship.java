@@ -1,5 +1,7 @@
 package by.sema.socialnetwork.entities;
 
+import by.sema.socialnetwork.status.FriendshipStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,10 +34,11 @@ public class Friendship {
     @JoinColumn(name = "friend_id", nullable = false)
     private User friend;
 
-    @Size(max = 20)
-    @ColumnDefault("pending")
+
+
     @Column(name = "status", length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private FriendshipStatus status;
 
 
 
